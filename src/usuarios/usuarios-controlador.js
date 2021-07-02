@@ -1,6 +1,19 @@
 const Usuario = require('./usuarios-modelo');
 const { InvalidArgumentError, InternalServerError } = require('../erros');
 
+const jwt = require('jsonwebtoken');
+
+// Função definida para a criação do JWT
+function criaTokenJWT(usuario) {
+  const payload = {
+    id: usuario.id
+  };
+
+  const token = jwt.sign(payload, 'senha-secreta');
+  return token;
+
+}
+
 module.exports = {
   adiciona: async (req, res) => {
     const { nome, email, senha } = req.body;
@@ -28,7 +41,9 @@ module.exports = {
   },
 
   login: (req, res) => {
-    res.status(204).send();
+    const token = criaTokenJWT(req.user); // Chamamos a função antes de enviarmos a resposta do login
+    res.set('Authorization', token); // Neste header conterá o token gerado
+    res.status(204).send(); // Esse código 204 indica que os headers são úteis
   },
 
   lista: async (req, res) => {
