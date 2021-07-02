@@ -33,7 +33,7 @@ passport.use(
         try {
             const usuario = await Usuario.buscaPorEmail(email);
             verificaUsuario(usuario);
-            await verificaSenha(senha, senhaHash);
+            await verificaSenha(senha, usuario.senhaHash);
 
             done(null, usuario);
         } catch (erro){
