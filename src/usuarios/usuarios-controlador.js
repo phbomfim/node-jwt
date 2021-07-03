@@ -9,9 +9,9 @@ function criaTokenJWT(usuario) {
     id: usuario.id
   };
 
-  const token = jwt.sign(payload, process.env.CHAVE_JWT);
+  // Criando token a partir de variavel e definição para tempo de expiração
+  const token = jwt.sign(payload, process.env.CHAVE_JWT, { expiresIn: '15m'  });
   return token;
-
 }
 
 module.exports = {
