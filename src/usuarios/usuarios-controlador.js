@@ -3,6 +3,8 @@ const { InvalidArgumentError, InternalServerError } = require('../erros');
 
 const jwt = require('jsonwebtoken');
 
+const blacklist = require('../../redis/manipula-blacklist');
+
 // Função definida para a criação do JWT
 function criaTokenJWT(usuario) {
   const payload = {
@@ -44,6 +46,18 @@ module.exports = {
     const token = criaTokenJWT(req.user); // Chamamos a função antes de enviarmos a resposta do login
     res.set('Authorization', token); // Neste header conterá o token gerado
     res.status(204).send(); // Esse código 204 indica que os headers são úteis
+  },
+
+  logout: async (req, res) => {
+
+    try {
+      const token = req.token;
+      await blacklist.adiciona(token);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ erro: erro.message });
+    }
+
   },
 
   lista: async (req, res) => {
